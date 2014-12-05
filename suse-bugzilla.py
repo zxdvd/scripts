@@ -44,7 +44,6 @@ def parser(data, config):
         sec_dct = OrderedDict(sorted(sec_dct.items(),
             key=lambda x:x[1]['time']))
         dct.update({section: sec_dct})
-    print(dct)
 
     for lst in data:
             if lst.get('resolution') in ['DUPLICATE', 'INVALID']:
@@ -55,8 +54,8 @@ def parser(data, config):
                 ctime = str(lst.get('creation_time'))
                 ctime = '-'.join([ctime[:4], ctime[4:6], ctime[6:8]])
 
-                for (k, v) in prod_dct.items():
-                    if v['time'] > ctime:
+                for k in reversed(prod_dct):
+                    if ctime > prod_dct[k]['time']:
                         prod_dct[k]['new'] += 1
                         break
 
@@ -64,29 +63,33 @@ def parser(data, config):
                     mtime = str(lst.get('last_change_time'))
                     #convert the 20130529 style time to 2013-05-29
                     mtime = '-'.join([mtime[:4], mtime[4:6], mtime[6:8]])
-                    for (k,v) in prod_dct.items():
-                        if v['time'] > mtime:
+                    for k in reversed(prod_dct):
+                        if mtime > prod_dct[k]['time']:
                             prod_dct[k]['fix'] += 1
                             break
 
+    #Get the name of the product which has the most release phase
     xaxis = ''
     for (k, v) in dct.items():
         print(k, v)
         xaxis = k if len(v) > len(dct.get(xaxis, '')) else xaxis
     x_tick = [k for k in dct[xaxis].keys()]
     print(x_tick)
-    x = [i for i in range(len(x_tick))]
-    plt.xticks(x, x_tick)
 
+    legend = []
     for (k, v) in dct.items():
-        y = []
-        for k1 in x_tick:
-            tmp_d = v.get(k1, None)
-            if tmp_d and tmp_d['fix']:
-                y.append(tmp_d['new']/tmp_d['fix'])
-            else:
-                y.append(None)
-        plt.plot(x, y)
+        legend.append(k)
+        x, x_t, y = [], [], []
+        for i in range(len(x_tick)):
+            tmp_d = v.get(x_tick[i], None)
+            if tmp_d and tmp_d['new']:
+                x.append(i)
+                x_t.append(x_tick[i])
+                y.append(tmp_d['fix']/tmp_d['new'])
+        plt.plot(x, y, 'o-')
+    plt.xticks(range(len(x_tick)), x_tick)
+    plt.legend(legend, loc='upper left')
+    plt.title('BMI Index')
     plt.show()
 
 
