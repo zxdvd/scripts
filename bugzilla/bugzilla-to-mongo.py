@@ -30,9 +30,11 @@ def login(uri, user, password):
     for p in prods:
         bugs = proxy.Bug.search({'product': p})
         if 'bugs' in bugs:
-            for item in bugs['bugs']:
+            while bugs['bugs']:
+                item = bugs['bugs'].pop(0)
                 # change the key id to _id to adapte mongodb's objectID
                 id = item.pop('id')
+                print(id)
                 item['_id'] = id
                 #get the comments of this bug and add it to dick item
                 #there are very few bugs may have some encoding problems
@@ -41,11 +43,12 @@ def login(uri, user, password):
                     comments = proxy.Bug.comments({'ids': [id]})
                 except:
                     comments = None
-                    print(id)
+                    print(str(id), 'failed to get comments')
                 if comments:
                     if 'bugs' in comments and str(id) in comments['bugs']:
                         item.update(comments['bugs'][str(id)])
                 prod_col.save(item)
+                item.clear()
 
     client.close()
 
