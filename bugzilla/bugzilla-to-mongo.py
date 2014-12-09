@@ -1,3 +1,4 @@
+import datetime
 from xmlrpc.client import ServerProxy
 
 import click
@@ -27,8 +28,10 @@ def login(uri, user, password):
     db = client.bz
     prod_col = db.prods
 
+    delta = datetime.timedelta(days=1)
+    t = datetime.datetime.utcnow() - delta
     for p in prods:
-        bugs = proxy.Bug.search({'product': p})
+        bugs = proxy.Bug.search({'product': p, 'last_change_time': t})
         if 'bugs' in bugs:
             while bugs['bugs']:
                 item = bugs['bugs'].pop(0)
