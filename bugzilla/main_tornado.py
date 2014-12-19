@@ -1,3 +1,19 @@
+'''
+Examples (IP = 147.2.212.204):
+Currently, the database only collects bugs of sle11sp3 and sle12.
+
+    curl IP/N         N=(1~99)
+                      - Get all bugs of recent N days
+    curl IP/prod/N    prod=(sled,sles,sled11sp3,sles11sp3,sled12...)
+                      - Get recent N days' bugs of a specific product
+    curl IP/email     email=The email bounded to bugzilla account
+                      - All bugs reported by someone
+    curl IP/string    - Get all bugs contain "string" in summary or keywords
+                      or component
+    curl IP/ID        ID=bug id
+                      - Get detailed information of a specific bug
+'''
+
 import datetime
 
 import tornado.ioloop
@@ -44,14 +60,7 @@ def bugs_parser(bugs,cols):
 class HelpHandler(tornado.web.RequestHandler):
     
     def get(self):
-        help = '''Help:
-        curl 147.2.212.204/N : recent N days' bugs
-        curl 147.2.212.204/sles(or sled, sled12)/N : N days' bugs
-        curl 147.2.212.204/xdzhang@suse.com : bug reported by xdzhang
-        curl 147.2.212.204/btrfs : btrfs related bugs
-        curl 147.2.212.204/BUG_ID : details about a specific bug
-        '''
-        self.write(help+'\n')
+        self.write(__doc__ + '\n')
 
 class BugidHandler(tornado.web.RequestHandler):
     
@@ -80,7 +89,9 @@ class SearchHandler(tornado.web.RequestHandler):
     contained this string.'''
 
     def get(self, word):
-        if '@' in word:
+        if word == 'help':
+            self.write(__doc__ + '\n')
+        elif '@' in word:
             bugs = prods.find({'creator': word})
             results = bugs_parser(bugs, ())
             for i in results:
