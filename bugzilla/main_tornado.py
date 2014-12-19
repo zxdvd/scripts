@@ -12,14 +12,15 @@ Currently, the database only collects bugs of sle11sp3 and sle12.
                       or component
     curl IP/ID        ID=bug id
                       - Get detailed information of a specific bug
+
 '''
 
 import datetime
-
 import tornado.ioloop
 import tornado.web
 from pymongo import MongoClient
 
+from string import join, split
 
 prod_alias = {'SUSE Linux Enterprise Server': 'sles',
               'SUSE Linux Enterprise Desktop': 'sled',
@@ -36,6 +37,13 @@ term_color = {'blk': '\033[30m', 'green': '\033[32m', 'red': '\033[31m',
 
 client = MongoClient('mongodb://147.2.212.204:27017/')
 prods = client.bz.prods
+
+def replace(text, *pairs):
+    """Do a series of global replacements on a string."""
+    while pairs:
+        text = join(split(text, pairs[0]), pairs[1])
+        pairs = pairs[2:]
+    return text
 
 def bugs_parser(bugs,cols):
 
@@ -61,6 +69,8 @@ class HelpHandler(tornado.web.RequestHandler):
     
     def get(self):
         self.write(__doc__ + '\n')
+        # if webbrowser:
+        # self.write(replace(__doc__, '\n\n', '\n \n', '\n\n', '\n \n', ' ', '&nbsp;', '\n', '<br>\n'))
 
 class BugidHandler(tornado.web.RequestHandler):
     
