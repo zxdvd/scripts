@@ -6,8 +6,10 @@ from pymongo import MongoClient
 
 prods = ['SUSE Linux Enterprise Server 12 (SLES 12)',
          'SUSE Linux Enterprise Server 11 SP3 (SLES 11 SP3)',
+         'SUSE Linux Enterprise Server 11 SP4 (SLES 11 SP4)',
          'SUSE Linux Enterprise Desktop 12',
-         'SUSE Linux Enterprise Desktop 11 SP3']
+         'SUSE Linux Enterprise Desktop 11 SP3',
+         'SUSE Linux Enterprise Desktop 11 SP4\xA0(SLED 11 SP4)']
 
 @click.command()
 @click.option('--uri', default='https://apibugzilla.novell.com/xmlrpc.cgi',
@@ -15,7 +17,8 @@ prods = ['SUSE Linux Enterprise Server 12 (SLES 12)',
 @click.option('-u', '--user', prompt='Please input the username of bugzilla',
               help='The username of bugzilla')
 @click.option('-p', '--password', prompt=True, hide_input=True)
-def login(uri, user, password):
+@click.option('-d', '--days', default=1, help='Recent N days\' bugs')
+def login(uri, user, password, days):
 
     #if no https in url, add it; if no user and passwd in it, add it
     if not uri.startswith('https://'):
@@ -28,7 +31,7 @@ def login(uri, user, password):
     db = client.bz
     prod_col = db.prods
 
-    delta = datetime.timedelta(days=1)
+    delta = datetime.timedelta(days=days)
     t = datetime.datetime.utcnow() - delta
     for p in prods:
         bugs = proxy.Bug.search({'product': p, 'last_change_time': t})
