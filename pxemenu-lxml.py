@@ -51,6 +51,7 @@ def topxe(urls):
                 f.write(pxeitem) 
 
 if __name__ == '__main__':
-    urls = getproduct(flt=['desktop','server', 'sled', 'sles', 'opensuse'])
+    urls = getproduct(medias=['DVD1', 'dvd1'],
+            flt=['desktop','server', 'sled', 'sles', 'opensuse'])
     if urls:
         topxe(urls)
