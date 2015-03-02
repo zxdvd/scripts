@@ -23,9 +23,10 @@ def recv_msg(s, fd):
             pong = data.decode().split()[1]
             sendstr(s, 'PONG '+pong+'\r\n')
             continue
-        t = datetime.now().strftime('%Y%m%d-%H-%M-%S')
-        fd.write(t + ': ' + data.decode())
-        fd.flush()
+        if data:
+            t = datetime.now().strftime('%Y%m%d-%H-%M-%S')
+            fd.write(t + ': ' + data.decode())
+            fd.flush()
 
 @click.command()
 @click.option('--server', default='irc.suse.de', help='IRC server')
