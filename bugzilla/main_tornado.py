@@ -29,7 +29,7 @@ prod_alias = {'SUSE Linux Enterprise Server': 'sles',
               'SUSE Linux Enterprise Desktop': 'sled',
               'SUSE Linux Enterprise Desktop 12': 'sled12',
               'SUSE Linux Enterprise Desktop 11 SP3': 'sled11sp3',
-              'SUSE Linux Enterprise Desktop 11 SP4 (SLED 11 SP4)': 'sled11sp4'}
+              'SUSE Linux Enterprise Desktop 11 SP4 (SLED 11 SP4)': 'sled11sp4'}
 #let the value be a key of the dict
 prod_alias.update({v:k for (k,v) in prod_alias.items()})
 
@@ -107,28 +107,37 @@ class SearchHandler(tornado.web.RequestHandler):
             self.finish()                   #close this request
 
         query = {}
+        #if you curl IP/sled, the handle will treat "sled" as word but not prod
+        #so you need to filter those special keywords like sled,sles and treat
+        #them as prod
+        if (not prod) and word in prod_alias:
+            prod = word
+            word = ''
         if prod and prod in prod_alias:
             if prod.isalpha():
                 query['classification'] = prod_alias[prod]
             else:
                 query['product'] = prod_alias[prod]
-        if '@' in word:
-            query['creator'] = word
-            bugs = prods.find(query)
-            results = bugs_parser(bugs, ())
-            for i in results:
-                i.update(term_color)
-                output = u'{id:6} {green}{prod: <9}{reset}| {summ}'.format(**i)
-                self.write(output+'\n')
-        else:
-            query['$text'] = {'$search': word}
-            bugs = prods.find(query)
-            results = bugs_parser(bugs, ())
-            for i in results:
-                i.update(term_color)
-                out = (u'{id:6} {red}@{creator: <13} {green}{prod: <9}{reset}|'
-                ' {summ}').format(**i)
-                self.write(out+'\n')
+                
+        if word:
+            if '@' in word:
+                query['creator'] = word
+                bugs = prods.find(query)
+                results = bugs_parser(bugs, ())
+                for i in results:
+                    i.update(term_color)
+                    output = u'{id:6} {green}{prod: <9}{reset}| {summ}'.format(**i)
+                    self.write(output+'\n')
+            else:
+                query['$text'] = {'$search': word}
+
+        bugs = prods.find(query)
+        results = bugs_parser(bugs, ())
+        for i in results:
+            i.update(term_color)
+            out = (u'{id:6} {red}@{creator: <13} {green}{prod: <9}{reset}|'
+            ' {summ}').format(**i)
+            self.write(out+'\n')
 
 class NDaybugHandler(tornado.web.RequestHandler):
     '''/n (n=1~99): all bugs of recent n days'''

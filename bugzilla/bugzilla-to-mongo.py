@@ -9,7 +9,7 @@ prods = ['SUSE Linux Enterprise Server 12 (SLES 12)',
          'SUSE Linux Enterprise Server 11 SP4 (SLES 11 SP4)',
          'SUSE Linux Enterprise Desktop 12',
          'SUSE Linux Enterprise Desktop 11 SP3',
-         'SUSE Linux Enterprise Desktop 11 SP4\xA0(SLED 11 SP4)']
+         'SUSE Linux Enterprise Desktop 11 SP4 (SLED 11 SP4)']
 
 @click.command()
 @click.option('--uri', default='https://apibugzilla.novell.com/xmlrpc.cgi',
