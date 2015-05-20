@@ -74,5 +74,5 @@ if __name__ == '__main__':
         (r'/([0-9]{6})/*', BugidHandler),
         (r'/([\w]+)', MainHandler),
         ], debug=True)
-    app.listen(8001)
+    app.listen(8100)
     tornado.ioloop.IOLoop.instance().start()
