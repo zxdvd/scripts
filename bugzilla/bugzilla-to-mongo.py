@@ -39,21 +39,21 @@ def login(uri, user, password, days):
             while bugs['bugs']:
                 item = bugs['bugs'].pop(0)
                 # change the key id to _id to adapte mongodb's objectID
-                id = item.pop('id')
-                print(id)
-                item['_id'] = id
+                bugid = item.pop('id')
+                print(bugid)
+                item['_id'] = bugid
                 #get the comments of this bug and add it to dick item
                 #there are very few bugs may have some encoding problems
                 #and the proxy.Bug.comments will get ExpatError
                 try:
-                    comments = proxy.Bug.comments({'ids': [id]})
+                    comments = proxy.Bug.comments({'ids': [bugid]})
                 except:
                     comments = None
-                    print(str(id), 'failed to get comments')
+                    print(str(bugid), 'failed to get comments')
                 if comments:
-                    if 'bugs' in comments and str(id) in comments['bugs']:
-                        item.update(comments['bugs'][str(id)])
-                prod_col.save(item)
+                    if 'bugs' in comments and str(bugid) in comments['bugs']:
+                        item.update(comments['bugs'][str(bugid)])
+                prod_col.replace_one({'_id':bugid}, item, upsert=True)
                 item.clear()
 
     client.close()
