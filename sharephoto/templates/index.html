@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+  <h3>Share photo to friends</h3>
+</div>
+<div>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+      <input type="text" name="nickname" required>
+      <br>
+      Select multiple images: <input type="file" name="img" multiple>
+      <input type="submit">
+  </form>
+</div>
+{% end %}

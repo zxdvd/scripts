@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+  <h3>All uploaded photos</h3>
+</div>
+<div>
+  <ul style="list-style-type:none">
+    {% for f in allfiles %}
+      <li>{{ f }}</li>
+    {% end %}
+  </ul>
+</div>
+{% end %}
