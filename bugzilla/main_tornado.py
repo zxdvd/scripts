@@ -24,10 +24,12 @@ from pymongo import MongoClient
 
 prod_alias = {'SUSE Linux Enterprise Server': 'sles',
               'SUSE Linux Enterprise Server 12 (SLES 12)': 'sles12',
+              'SUSE Linux Enterprise Server 12 SP1': 'sles12sp1',
               'SUSE Linux Enterprise Server 11 SP3 (SLES 11 SP3)': 'sles11sp3',
               'SUSE Linux Enterprise Server 11 SP4 (SLES 11 SP4)': 'sles11sp4',
               'SUSE Linux Enterprise Desktop': 'sled',
               'SUSE Linux Enterprise Desktop 12': 'sled12',
+              'SUSE Linux Enterprise Desktop 12 SP1\xA0(SLED 12 SP1)': 'sled12sp1',
               'SUSE Linux Enterprise Desktop 11 SP3': 'sled11sp3',
               'SUSE Linux Enterprise Desktop 11 SP4 (SLED 11 SP4)': 'sled11sp4'}
 #let the value be a key of the dict

@@ -5,9 +5,11 @@ import click
 from pymongo import MongoClient
 
 prods = ['SUSE Linux Enterprise Server 12 (SLES 12)',
+         'SUSE Linux Enterprise Server 12 SP1',
          'SUSE Linux Enterprise Server 11 SP3 (SLES 11 SP3)',
          'SUSE Linux Enterprise Server 11 SP4 (SLES 11 SP4)',
          'SUSE Linux Enterprise Desktop 12',
+         'SUSE Linux Enterprise Desktop 12 SP1\xA0(SLED 12 SP1)',
          'SUSE Linux Enterprise Desktop 11 SP3',
          'SUSE Linux Enterprise Desktop 11 SP4 (SLED 11 SP4)']
 
