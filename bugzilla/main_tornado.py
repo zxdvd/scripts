@@ -124,12 +124,6 @@ class SearchHandler(tornado.web.RequestHandler):
         if word:
             if '@' in word:
                 query['creator'] = word
-                bugs = prods.find(query)
-                results = bugs_parser(bugs, ())
-                for i in results:
-                    i.update(term_color)
-                    output = u'{id:6} {green}{prod: <9}{reset}| {summ}'.format(**i)
-                    self.write(output+'\n')
             else:
                 query['$text'] = {'$search': word}
 
